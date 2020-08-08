@@ -17,7 +17,7 @@ class Login extends Component {
     starts: [],
   }
   componentDidMount() {
-    const starts = [...this.state.starts]
+    const starts = []
     for (let i = 0; i < 800; i++) {
       starts.push({
         key: Date.now() + i,
@@ -35,8 +35,9 @@ class Login extends Component {
   onFinish = async (e) => {
     const data = await reqLogin(e)
     if (data) {
-      createLoginAction(data)
-      this.props.history.replace('/admin/home')
+      this.props.createLoginAction(data)
+      message.success('登录成功', 1)
+      this.props.history.replace('/admin')
     }
   }
   onFinishFailed = () => message.error('校验失败，请重新输入！', 1)
