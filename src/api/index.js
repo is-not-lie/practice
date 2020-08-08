@@ -75,3 +75,9 @@ export const reqUpdateRole = (v) => instance.post('/manage/role/update', v)
 export const reqUserList = () => instance.get('/manage/user/list')
 // 请求添加用户
 export const reqAddUser = (v) => instance.post('/manage/user/add', { ...v })
+// 请求更新用户信息
+export const reqUpdateUser = (v) =>
+  instance.post('/manage/user/update', { ...v })
+// 请求删除用户
+export const reqDelUser = (userId) =>
+  instance.post('/manage/user/delete', { userId })

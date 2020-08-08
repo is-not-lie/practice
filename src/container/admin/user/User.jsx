@@ -4,7 +4,13 @@ import { PlusOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import { PAGESIZE } from '../../../config'
 import { addUserRules } from '../../../config/rules/user_rules'
-import { reqUserList, reqAddUser } from '../../../api'
+import {
+  reqUserList,
+  reqAddUser,
+  reqUpdateUser,
+  reqDelUser,
+} from '../../../api'
+import ImgUpload from '../ImgUpload/ImgUpload'
 const { Item } = Form
 const { Option } = Select
 
@@ -52,23 +58,29 @@ export default class User extends Component {
             <Button
               type="link"
               onClick={() => {
-                this.setState({ isShowUpdate: true })
+                this.form.setFieldsValue({ ...item })
+                this.setState({ update: true, visible: true, item })
               }}
             >
               修改
             </Button>
-            <Button type="link" onClick={() => {}}>
+            <Button
+              type="link"
+              onClick={() => this.setState({ isShowDelModal: true, item })}
+            >
               删除
             </Button>
           </div>
         ),
       },
     ],
-    isShowAdd: false,
-    isShowUpdate: false,
+    add: false,
+    update: false,
     roles: [],
     isLoading: true,
-    addLoading: false,
+    modalLoading: false,
+    item: {},
+    isShowDelModal: false,
   }
   componentDidMount() {
     this.getUserList()
@@ -84,41 +96,77 @@ export default class User extends Component {
       })
     }
   }
+
   handleOk = () => {
-    this.setState({ addLoading: true })
-    this.addForm
+    const { add } = this.state
+    this.setState({ modalLoading: true })
+    this.form
       .validateFields(['username', 'password', 'phone', 'email', 'role_id'])
-      .then(async (v) => {
-        const data = await reqAddUser(v)
-        if (data) {
-          const userList = [...this.state.userList]
-          userList.unshift(data)
-          this.setState({ userList, isShowAdd: false, addLoading: false })
-          this.addForm.resetFields()
-          message.success('新增用户成功', 1)
-        }
+      .then((v) => {
+        v.imgs = this.imgs.getImgArr()
+        add ? this.addUser(v) : this.updateUser(v)
       })
-      .catch(() => message.error('校验失败，请检查'))
+      .catch(() => message.error('校验失败，请检查', 1))
   }
   handleCancel = () => {
-    this.setState({ isShowAdd: false })
-    this.addForm.resetFields()
+    this.state.add
+      ? this.setState({ add: false, visible: false })
+      : this.setState({ update: false, visible: false })
+    this.form.resetFields()
   }
-  handleAuthOk = () => {
-    this.setState({ isShowUpdate: false })
+  addUser = async (v) => {
+    const data = await reqAddUser(v)
+    if (data) {
+      const userList = [...this.state.userList]
+      userList.unshift(data)
+      this.setState({
+        userList,
+        add: false,
+        modalLoading: false,
+        visible: false,
+      })
+      this.form.resetFields()
+      message.success('新增用户成功', 1)
+    }
   }
-  handleAuthCancel = () => {
-    this.setState({ isShowUpdate: false })
+  updateUser = async (v) => {
+    const { _id } = this.state.item
+    const data = await reqUpdateUser({ _id, ...v })
+    if (data) {
+      let userList = [...this.state.userList]
+      userList = userList.map((item) => (item._id === _id ? data : item))
+      this.setState({
+        userList,
+        update: false,
+        modalLoading: false,
+        visible: false,
+      })
+      this.form.resetFields()
+      message.success('修改用户信息成功', 1)
+    }
   }
+  delUserOk = async () => {
+    const { _id } = this.state.item
+    const data = await reqDelUser(_id)
+    if (data) {
+      const userList = [...this.state.userList]
+      const result = userList.find((item) => item._id === _id)
+      userList.splice(userList.indexOf(result), 1)
+      this.setState({ userList, isShowDelModal: false })
+      message.success('删除用户成功')
+    }
+  }
+  delUserCancel = () => this.setState({ isShowDelModal: false })
   render() {
     const {
       userList,
       columns,
-      isShowAdd,
-      isShowUpdate,
+      add,
+      visible,
       roles,
       isLoading,
-      addLoading,
+      modalLoading,
+      isShowDelModal,
     } = this.state
     return (
       <div className="user">
@@ -126,22 +174,23 @@ export default class User extends Component {
           title={
             <Button
               icon={<PlusOutlined />}
-              onClick={() => this.setState({ isShowAdd: true })}
+              onClick={() => this.setState({ visible: true, add: true })}
             >
               创建用户
             </Button>
           }
         >
           <Modal
-            loading={addLoading}
-            title="添加用户"
-            visible={isShowAdd}
+            forceRender
+            loading={modalLoading}
+            title={add ? '添加用户' : '修改信息'}
+            visible={visible}
             onOk={this.handleOk}
             onCancel={this.handleCancel}
             okText="确定"
             cancelText="取消"
           >
-            <Form ref={(ref) => (this.addForm = ref)}>
+            <Form ref={(ref) => (this.form = ref)}>
               <Item
                 name="username"
                 label="用户名"
@@ -162,13 +211,16 @@ export default class User extends Component {
               <Item name="email" label="邮箱" rules={[addUserRules.email]}>
                 <Input placeholder="请输入邮箱" type="email" />
               </Item>
+              <Item label="用户头像">
+                <ImgUpload ref={(ref) => (this.imgs = ref)} />
+              </Item>
               <Item
                 name="role_id"
                 label="角色"
                 rules={[addUserRules.role_id]}
                 initialValue=""
               >
-                <Select disabled={roles.length}>
+                <Select disabled={!roles.length}>
                   <Option value="">请选择一个角色</Option>
                   {roles.map((item) => (
                     <Option key={item._id} value={item._id}>
@@ -180,18 +232,13 @@ export default class User extends Component {
             </Form>
           </Modal>
           <Modal
-            visible={isShowUpdate}
-            onOk={this.handleAuthOk}
-            onCancel={this.handleAuthCancel}
+            title="确认删除此用户吗?"
+            visible={isShowDelModal}
+            onOk={this.delUserOk}
+            onCancel={this.delUserCancel}
             okText="确定"
             cancelText="取消"
-          >
-            <Form ref={(ref) => (this.updateForm = ref)}>
-              <Item>
-                <Input />
-              </Item>
-            </Form>
-          </Modal>
+          />
           <Table
             dataSource={userList}
             columns={columns}

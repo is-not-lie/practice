@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Upload, Modal, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { BASE_URL } from '../../../../config'
-import { reqRemoveImg } from '../../../../api'
+import { BASE_URL } from '../../../config'
+import { reqRemoveImg } from '../../../api'
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {

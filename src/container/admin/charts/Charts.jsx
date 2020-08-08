@@ -1,11 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Card, Button } from 'antd'
+import { LoadingOutlined, UndoOutlined } from '@ant-design/icons'
 import ReactEcharts from 'echarts-for-react'
 import { reqCategoryList } from '../../../api'
 @connect((state) => ({ categoryList: state.categoryList }))
 class Charts extends Component {
   state = {
     category: [],
+    isDisabled: false,
+    isLoading: true,
   }
   componentDidMount() {
     this.getCategoryList()
@@ -16,7 +20,7 @@ class Charts extends Component {
     if (data) {
       const category = []
       data.forEach((item) => category.push(item.name))
-      this.setState({ category })
+      this.setState({ category, isDisabled: false, isLoading: false })
     }
   }
   getOption = () => ({
@@ -36,9 +40,28 @@ class Charts extends Component {
       },
     ],
   })
-
+  update = () => {
+    this.setState({ isDisabled: true })
+    this.getCategoryList()
+  }
   render() {
-    return <ReactEcharts option={this.getOption()} />
+    const { isDisabled, isLoading } = this.state
+    return (
+      <Card
+        loading={isLoading}
+        title={
+          <Button
+            disabled={isDisabled}
+            icon={isDisabled ? <LoadingOutlined /> : <UndoOutlined />}
+            onClick={this.update}
+          >
+            更新
+          </Button>
+        }
+      >
+        <ReactEcharts option={this.getOption()} />
+      </Card>
+    )
   }
 }
 export default Charts

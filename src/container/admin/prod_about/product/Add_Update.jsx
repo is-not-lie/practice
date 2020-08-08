@@ -9,7 +9,7 @@ import {
   reqProductInfo,
   reqUpdateProduct,
 } from '../../../../api'
-import ImgUpload from './ImgUpload'
+import ImgUpload from '../../ImgUpload/ImgUpload'
 import RichTextEditor from './RichTextEditor'
 const { Item } = Form
 const { Option } = Select
