@@ -4,7 +4,7 @@ import { Redirect, Route, Switch } from 'react-router-dom'
 import { Layout } from 'antd'
 import Header from './header/Header'
 import LeftNav from './navList/LeftNav'
-import './Admin.less'
+import '../../../less/Admin.less'
 // 路由组件
 import Home from '../home/Home'
 import Category from '../prod_about/category/Category'
@@ -13,9 +13,7 @@ import AddUpdate from '../prod_about/product/Add_Update'
 import Detail from '../prod_about/product/Detail'
 import User from '../user/User'
 import Role from '../role/Role'
-import Bar from '../charts/bar/Bar'
-import Line from '../charts/line/Line'
-import Pie from '../charts/pie/Pie'
+import Charts from '../charts/Charts'
 const { Sider, Content } = Layout
 
 @connect((state) => ({ collapsed: state.collapsed, userInfo: state.userInfo }))
@@ -59,9 +57,7 @@ class Admin extends Component {
               />
               <Route path="/admin/user" component={User} />
               <Route path="/admin/role" component={Role} />
-              <Route path="/admin/charts/bar" component={Bar} />
-              <Route path="/admin/charts/line" component={Line} />
-              <Route path="/admin/charts/pie" component={Pie} />
+              <Route path="/admin/charts/:type" component={Charts} />
               <Redirect to="/admin/home" />
             </Switch>
           </Content>

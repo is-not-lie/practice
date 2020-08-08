@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import userImg from '../../../static/img/userImg.jpg'
-import './Home.less'
+import '../../../less/Home.less'
 @connect((state) => ({ userInfo: state.userInfo }))
 class Home extends Component {
   state = {
@@ -13,6 +13,7 @@ class Home extends Component {
   }
   componentWillUnmount() {
     clearInterval(this.timeKey)
+    window.onresize = null
   }
   canvasMove = () => {
     clearInterval(this.timeKey)
@@ -32,7 +33,7 @@ class Home extends Component {
     }
     this.timeKey = setInterval(() => {
       ctx.clearRect(0, 0, oc.width, oc.height)
-      stars.forEach((item, i) => {
+      stars.forEach((item) => {
         if (item.x > oc.width) item.x = Math.random() * oc.width
         if (item.y > oc.height) item.y = Math.random() * oc.height
         item.x += Math.random()

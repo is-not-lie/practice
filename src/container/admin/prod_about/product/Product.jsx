@@ -41,6 +41,7 @@ class Product extends Component {
         render: (item) => (
           <div>
             <Button
+              disabled={this.state.isDisabled}
               type={item.status === 1 ? 'danger' : 'primary'}
               onClick={() => this.updateProductStatus(item)}
             >
@@ -89,6 +90,8 @@ class Product extends Component {
     searchType: 'productName',
     keyWord: '',
     isSearch: false,
+    isLogin: true,
+    isDisabled: false,
   }
   componentDidMount() {
     this.reqProductList()
@@ -101,30 +104,46 @@ class Product extends Component {
       : await reqProductList(number, pageSize)
     if (data) {
       const { pageNum, total, list } = data
-      this.setState({ current: pageNum, total, productList: list })
+      this.setState({
+        current: pageNum,
+        total,
+        productList: list,
+        isLogin: false,
+        isDisabled: false,
+      })
       this.props.addProductList(list)
     }
   }
   // 搜索按钮回调
   search = () => {
-    this.setState({ isSearch: true })
+    this.setState({ isSearch: true, isLogin: true, isDisabled: true })
     this.reqProductList()
   }
   // 更新商品状态回调
   updateProductStatus = async (item) => {
+    this.setState({ isDisabled: true })
     let { _id, status } = item
     status = status === 1 ? 2 : 1
-    await reqUpdateProductStatus(_id, status)
-    const productList = [...this.state.productList]
-    productList.map((item) => {
-      item.status = item._id === _id ? status : item.status
-      return item
-    })
-    this.setState({ productList })
-    message.success('商品状态更新成功', 1)
+    const data = await reqUpdateProductStatus(_id, status)
+    if (data) {
+      const productList = [...this.state.productList]
+      productList.map((item) => {
+        item.status = item._id === _id ? status : item.status
+        return item
+      })
+      this.setState({ productList, isDisabled: false })
+      message.success('商品状态更新成功', 1)
+    }
   }
   render() {
-    const { columns, productList, current, total } = this.state
+    const {
+      columns,
+      productList,
+      current,
+      total,
+      isLogin,
+      isDisabled,
+    } = this.state
     return (
       <Card
         title={
@@ -141,7 +160,9 @@ class Product extends Component {
               placeholder="关键字"
               style={{ width: '20%', margin: '0 10px' }}
             />
-            <Button onClick={this.search}>搜索</Button>
+            <Button disabled={isDisabled} onClick={this.search}>
+              搜索
+            </Button>
           </div>
         }
         extra={
@@ -156,6 +177,7 @@ class Product extends Component {
         }
       >
         <Table
+          isLogin={isLogin}
           columns={columns}
           dataSource={productList}
           bordered

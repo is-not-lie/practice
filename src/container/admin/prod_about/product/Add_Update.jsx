@@ -37,8 +37,9 @@ class AddUpdate extends Component {
     if (id) {
       this.setState({ id })
       if (productList.length) {
-        let result = productList.find((item) => item._id === id)
+        const result = productList.find((item) => item._id === id)
         if (result) {
+          this.form.setFieldsValue({ ...result })
           this.setState({ ...result })
           this.pic.setImgArr(result.imgs)
           this.rich.setRichText(result.detail)
@@ -58,18 +59,20 @@ class AddUpdate extends Component {
   // 获取分类列表信息
   getCategoryList = async () => {
     const data = await reqCategoryList()
-    this.setState({ categoryList: data })
+    if (data) this.setState({ categoryList: data })
   }
   // 表单提交成功回调
   onFinish = async (e) => {
     const imgs = this.pic.getImgArr()
     const detail = this.rich.getRichText()
     const { id, _id } = this.state
-    id
+    const data = id
       ? await reqUpdateProduct({ ...e, imgs, detail, _id })
       : await reqAddProduct({ imgs, detail, ...e })
-    this.props.history.replace('/admin/prod_about/product')
-    message.success('操作成功')
+    if (data) {
+      this.props.history.replace('/admin/prod_about/product')
+      message.success('操作成功')
+    }
   }
   // 表单提交失败回调
   onFinishFailed = () => message.error('校验失败，请检查商品信息')
@@ -89,6 +92,7 @@ class AddUpdate extends Component {
         }
       >
         <Form
+          ref={(ref) => (this.form = ref)}
           onFinish={this.onFinish}
           onFinishFailed={this.onFinishFailed}
           labelCol={{ md: 2 }}

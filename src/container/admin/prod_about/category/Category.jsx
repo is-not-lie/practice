@@ -95,19 +95,21 @@ class Category extends Component {
   // 修改商品分类回调
   operCategory = async (v) => {
     const { _id } = this.state.item
-    await reqUpdateCategory({ categoryId: _id, ...v })
-    const categoryList = [...this.state.categoryList]
-    categoryList.map((item) => {
-      item.name = item._id === _id ? v.categoryName : item.name
-      return item
-    })
-    this.setState({
-      item: null,
-      visible: false,
-      confirmLoading: false,
-      categoryList,
-    })
-    message.success('商品分类更新成功', 1)
+    const data = await reqUpdateCategory({ categoryId: _id, ...v })
+    if (data) {
+      const categoryList = [...this.state.categoryList]
+      categoryList.map((item) => {
+        item.name = item._id === _id ? v.categoryName : item.name
+        return item
+      })
+      this.setState({
+        item: null,
+        visible: false,
+        confirmLoading: false,
+        categoryList,
+      })
+      message.success('商品分类更新成功', 1)
+    }
   }
   render() {
     const {

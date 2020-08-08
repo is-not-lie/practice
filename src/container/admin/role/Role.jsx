@@ -4,7 +4,7 @@ import { Card, Button, Table, Modal, Form, Input, message, Tree } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import { reqRoleList, reqAddRole, reqUpdateRole } from '../../../api'
-import menuList from '../Admin/list/listConfig'
+import navConfig from '../../../config/navConfig'
 const { Item } = Form
 @connect((state) => ({ userInfo: state.userInfo }))
 class Role extends Component {
@@ -59,33 +59,35 @@ class Role extends Component {
       {
         title: '平台权限',
         key: 'all',
-        children: [...menuList],
+        children: [...navConfig],
       },
     ],
     checkedKeys: [],
     _id: '',
+    isLoading: true,
+    addLoading: false,
+    setLoading: false,
   }
   componentDidMount() {
+    // 请求角色列表信息
     ;(async () => {
-      const { status, data } = await reqRoleList()
-      if (status === 0) {
-        this.setState({ roleList: data })
-      } else message.error('暂无角色信息')
+      const data = await reqRoleList()
+      if (data) this.setState({ roleList: data.reverse(), isLoading: false })
     })()
   }
   handleAddOk = () => {
+    this.setState({ addLoading: true })
     this.form
       .validateFields(['roleName'])
       .then(async (v) => {
-        const { status, data } = await reqAddRole(v)
-        if (status === 0) {
-          message.success('新增角色成功', 1)
+        const data = await reqAddRole(v)
+        if (data) {
           const roleList = [...this.state.roleList]
           roleList.unshift(data)
-          this.setState({ roleList })
-        } else message.error('添加角色失败，请稍后重新尝试', 1)
-        this.setState({ isShowAdd: false })
-        this.form.resetFields()
+          this.setState({ roleList, isShowAdd: false, addLoading: false })
+          this.form.resetFields()
+          message.success('新增角色成功', 1)
+        }
       })
       .catch(() => message.error('表单验证失败，请检查输入'))
   }
@@ -94,33 +96,31 @@ class Role extends Component {
     this.form.resetFields()
   }
   handleAuthOk = async () => {
+    this.setState({ setLoading: true })
     const menus = [...this.state.checkedKeys]
     const auth_name = this.props.userInfo.user.username
     const auth_time = Date.now()
     const { _id } = this.state
-    const { status } = await reqUpdateRole({
+    const data = await reqUpdateRole({
       _id,
       menus,
       auth_time,
       auth_name,
     })
-    if (status === 0) {
-      // const roleList = [...this.state.roleList]
-      // roleList.find()
-      // console.log(data)
+    if (data) {
+      const roleList = [...this.state.roleList]
+      roleList.forEach((item) => {
+        if (item._id === _id) {
+          item.menus = menus
+          item.auth_time = auth_time
+          item.auth_name = auth_name
+        }
+      })
+      this.setState({ roleList, isShowAuth: false, setLoading: false })
       message.success('角色授权成功')
-      ;(async () => {
-        const { status, data } = await reqRoleList()
-        if (status === 0) {
-          this.setState({ roleList: data })
-        } else message.error('暂无角色信息')
-      })()
-    } else message.error('授权失败，请联系管理人员')
-    this.setState({ isShowAuth: false })
+    }
   }
-  handleAuthCancel = () => {
-    this.setState({ isShowAuth: false })
-  }
+  handleAuthCancel = () => this.setState({ isShowAuth: false })
 
   // 选项状态改变时触发回调
   onCheck = (checkedKeys) => this.setState({ checkedKeys })
@@ -133,13 +133,15 @@ class Role extends Component {
       isShowAuth,
       treeData,
       checkedKeys,
+      isLoading,
+      addLoading,
+      setLoading,
     } = this.state
     return (
       <div className="role">
         <Card
           title={
             <Button
-              type="primary"
               icon={<PlusOutlined />}
               onClick={() => this.setState({ isShowAdd: true })}
             >
@@ -148,6 +150,7 @@ class Role extends Component {
           }
         >
           <Modal
+            loading={addLoading}
             title="新增角色"
             visible={isShowAdd}
             onOk={this.handleAddOk}
@@ -169,6 +172,7 @@ class Role extends Component {
             </Form>
           </Modal>
           <Modal
+            loading={setLoading}
             title="设置权限"
             visible={isShowAuth}
             onOk={this.handleAuthOk}
@@ -185,6 +189,7 @@ class Role extends Component {
             />
           </Modal>
           <Table
+            loading={isLoading}
             dataSource={roleList}
             columns={columns}
             bordered

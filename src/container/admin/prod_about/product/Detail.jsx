@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Card, Button, List, message } from 'antd'
+import { Card, Button, List } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { reqProductInfo, reqCategoryInfo } from '../../../../api'
 import { BASE_URL } from '../../../../config'
@@ -47,7 +47,7 @@ class Detail extends Component {
     }
   }
   render() {
-    let {
+    const {
       name,
       desc,
       price,

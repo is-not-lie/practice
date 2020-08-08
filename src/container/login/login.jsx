@@ -4,9 +4,9 @@ import { Redirect } from 'react-router-dom'
 import { Form, Input, Button, message } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import { createLoginAction } from '../../redux/actions/login_action'
-import { usernameRules, passwordRules } from '../../rules/login_rules'
+import { usernameRules, passwordRules } from '../../config/rules/login_rules'
 import { reqLogin } from '../../api'
-import './login.less'
+import '../../less/login.less'
 import logo from '../../static/img/logo.png'
 const { Item } = Form
 @connect((state) => ({ isLogin: state.userInfo.isLogin }), {

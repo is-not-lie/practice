@@ -47,8 +47,8 @@ class ImgUpload extends Component {
       fileList[fileList.length - 1].name = file.response.data.name
     }
     if (file.status === 'removed') {
-      await reqRemoveImg(file.name)
-      message.success('图片删除成功')
+      const data = await reqRemoveImg(file.name)
+      if (data) message.success('图片删除成功')
     }
     this.setState({ fileList })
   }
@@ -59,9 +59,11 @@ class ImgUpload extends Component {
     return result
   }
   setImgArr = (imgArr) => {
-    let fileList = imgArr.map((item, i) => {
-      return { uid: -i, name: item, url: `${BASE_URL}/upload/${item}` }
-    })
+    let fileList = imgArr.map((item, i) => ({
+      uid: -i,
+      name: item,
+      url: `${BASE_URL}/upload/${item}`,
+    }))
     this.setState({ fileList })
   }
   render() {

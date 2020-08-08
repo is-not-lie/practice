@@ -15,7 +15,7 @@ import { setCollapsed } from '../../../../redux/actions/admin_action'
 import { outLogin } from '../../../../redux/actions/login_action'
 import { reqWeatherInfo } from '../../../../api'
 import navConfig from '../../../../config/navConfig'
-import './header.less'
+import '../../../../less/header.less'
 
 const { confirm } = Modal
 

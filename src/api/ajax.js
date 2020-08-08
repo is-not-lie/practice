@@ -31,7 +31,7 @@ instance.interceptors.response.use(
     // 停止进度条动画，脱掉axios封装的壳
     NProgress.done()
     const { status, data, msg } = value.data
-    if (status === 0) return data
+    if (status === 0) return data || 1
     else
       msg
         ? message.error(msg, 1)
