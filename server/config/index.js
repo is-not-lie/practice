@@ -9,7 +9,7 @@ const SERVER_CONFIG = {
 }
 
 // token校验的白名单
-const UN_CHECK_PATHS = ['/login', '/img/upload']
+const UN_CHECK_PATHS = ['/', '/login', '/img/upload']
 
 // token签名加密的私钥
 const PRIVATE_KEY = 'test'

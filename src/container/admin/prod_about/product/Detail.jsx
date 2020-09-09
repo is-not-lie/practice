@@ -149,7 +149,7 @@ class Detail extends Component {
               </span>
               {imgs.map((item, i) => (
                 <img
-                  src={`${BASE_URL}/upload/${item}`}
+                  src={`${BASE_URL}/${item}`}
                   alt="商品图片"
                   key={categoryId + i}
                   style={{ width: '100px', height: '100px' }}

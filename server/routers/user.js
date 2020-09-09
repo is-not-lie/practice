@@ -23,10 +23,11 @@ module.exports = (router) => {
   // 更新用户
   router.post('/user/update', (req, res) => {
     const user = req.body
+    console.log(user)
     UserModel.findOneAndUpdate({ _id: user._id }, user)
       .then((oldUser) => {
         const data = Object.assign(oldUser, user)
-        res.send({ status: 0, data })
+        res.send({ status: 200, data })
       })
       .catch((err) => {
         console.error(`更新用户异常,错误信息:${err}`)

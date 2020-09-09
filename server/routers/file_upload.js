@@ -3,8 +3,7 @@ const path = require('path')
 const fs = require('fs')
 const { SERVER_CONFIG } = require('../config')
 
-const dirPath = path.join(__dirname, '..', 'public/upload')
-console.log(dirPath)
+const dirPath = path.join(__dirname, '..', '/static')
 const uploadSingle = multer({
   storage: multer.diskStorage({
     destination(req, file, cb) {
@@ -40,7 +39,7 @@ module.exports = (router) => {
         status: 200,
         data: {
           name: filename,
-          url: `http://${SERVER_CONFIG.host}:${SERVER_CONFIG.port}/upload/${filename}`,
+          url: `http://${SERVER_CONFIG.host}:${SERVER_CONFIG.port}/${filename}`,
         },
       })
     })
@@ -48,7 +47,6 @@ module.exports = (router) => {
 
   // 删除图片
   router.post('/img/delete', (req, res) => {
-    console.log(req.body)
     const { name } = req.body
     fs.unlink(path.join(dirPath, name), (err) => {
       if (err) {

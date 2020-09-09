@@ -115,6 +115,10 @@ export default class User extends Component {
     this.form.resetFields()
   }
   addUser = async (v) => {
+    const { imgs } = v
+    if (imgs.length > 0) {
+      v.avatar = imgs[0]
+    }
     const data = await reqAddUser(v)
     if (data) {
       const userList = [...this.state.userList]
@@ -131,6 +135,10 @@ export default class User extends Component {
   }
   updateUser = async (v) => {
     const { _id } = this.state.item
+    const { imgs } = v
+    if (imgs.length > 0) {
+      v.avatar = imgs[0]
+    }
     const data = await reqUpdateUser({ _id, ...v })
     if (data) {
       let userList = [...this.state.userList]

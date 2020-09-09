@@ -19,9 +19,14 @@ router.post('/login', (req, res) => {
         // 查询用户权限(有id的话)
         if (user.role_id) {
           RoleModel.findOne({ _id: user.role_id })
-            .then(role => { user._doc.role = role })
-        } else user._doc.role = { menus: [] }
-        res.send({ status: 200, data: { user, token } })
+            .then(role => {
+              user._doc.role = role
+              res.send({ status: 200, data: { user, token } })
+            })
+        } else {
+          user._doc.role = { menus: [] }
+          res.send({ status: 200, data: { user, token } })
+        }
       } else res.send({ status: 0, msg: '用户名或密码不正确!' })
     })
     .catch((err) => {

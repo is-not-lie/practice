@@ -1,12 +1,13 @@
 const mongoose = require('mongoose')
 const express = require('express')
+const { resolve } = require('path')
 const cookieParser = require('cookie-parser')
 const { token } = require('./utils')
 const { DB_CONFIG, SERVER_CONFIG } = require('./config')
 const app = express()
 
 // 暴露静态资源
-app.use(express.static('public'))
+app.use(express.static(resolve(__dirname, './static')))
 // 解析post请求体参数
 app.use(express.urlencoded({ extended: true }))
 // 处理json格式的请求体参数
@@ -17,8 +18,10 @@ app.use(token)
 // 设置cors跨域  如果没有配置代理请开启
 app.use((req, res, next) => {
   res.set('Access-Control-Allow-Origin', '*')
-  res.set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
-  res.set('Access-Control-Allow-Headers', 'content-type, authorization, accept')
+  res.set('Access-Control-Allow-Methods', '*')
+  res.set('Access-Control-Allow-Headers', '*')
+  // res.set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+  // res.set('Access-Control-Allow-Headers', 'content-type, authorization, accept')
   res.set('Access-Control-Max-Age', 86400)
   if (req.method.toLowerCase() === 'options') return res.end()
   next()

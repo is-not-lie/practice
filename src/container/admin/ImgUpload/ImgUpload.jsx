@@ -39,10 +39,7 @@ class ImgUpload extends Component {
   // 图片状态发生改变的回调
   handleChange = async ({ file, fileList }) => {
     if (file.status === 'done') {
-      let url = `${BASE_URL}/${file.response.data.url
-        .split('/')
-        .splice(3)
-        .join('/')}`
+      const url = file.response.data.url
       fileList[fileList.length - 1].url = url
       fileList[fileList.length - 1].name = file.response.data.name
     }
@@ -62,7 +59,7 @@ class ImgUpload extends Component {
     let fileList = imgArr.map((item, i) => ({
       uid: -i,
       name: item,
-      url: `${BASE_URL}/upload/${item}`,
+      url: `${BASE_URL}/${item}`,
     }))
     this.setState({ fileList })
   }
@@ -78,7 +75,7 @@ class ImgUpload extends Component {
       <div className="clearfix">
         <Upload
           // 接收图片服务器的地址
-          action={`${BASE_URL}/upload`}
+          action={`${BASE_URL}/img/upload`}
           // 请求方式
           method="post"
           // 发给服务器的参数名称

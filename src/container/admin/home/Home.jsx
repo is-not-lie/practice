@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import '../../../less/Home.less'
+import { BASE_URL } from '../../../config'
 @connect((state) => ({ userInfo: state.userInfo }))
 class Home extends Component {
   state = {
@@ -52,7 +53,7 @@ class Home extends Component {
     const { username, avatar } = this.props.userInfo.user
     return (
       <div className="home" ref={(ref) => (this.home = ref)}>
-        <img src={avatar} alt="用户头像" />
+        <img src={`${BASE_URL}/${avatar}`} alt="用户头像" />
         <h2>欢迎，{username}</h2>
         <canvas className="canvas" ref={(ref) => (this.oc = ref)}></canvas>
       </div>
