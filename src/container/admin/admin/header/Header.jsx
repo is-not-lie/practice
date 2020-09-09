@@ -8,6 +8,7 @@ import {
   FullscreenOutlined,
   FullscreenExitOutlined,
   ExclamationCircleOutlined,
+  FieldTimeOutlined,
 } from '@ant-design/icons'
 import fullscreen from 'screenfull'
 import dayjs from 'dayjs'
@@ -28,7 +29,7 @@ class Header extends Component {
   state = {
     collapsed: false,
     isScreen: false,
-    time: dayjs().format('YYYY/MM/DD hh:mm:ss'),
+    time: dayjs().format('HH:mm'),
     title: '',
   }
   componentDidMount() {
@@ -39,7 +40,7 @@ class Header extends Component {
     })()
     // 开启定时器更新时间
     this.timeKey = setInterval(
-      () => this.setState({ time: dayjs().format('YYYY/MM/DD hh:mm:ss') }),
+      () => this.setState({ time: dayjs().format('HH:mm') }),
       1000
     )
     // 监听全屏变化
@@ -93,7 +94,7 @@ class Header extends Component {
     })
   }
   render() {
-    const { time, dayPictureUrl, weather, temperature, title } = this.state
+    const { time, dayPictureUrl, title } = this.state
     return (
       <header className="admin-header">
         {React.createElement(
@@ -122,10 +123,11 @@ class Header extends Component {
               <span>{this.props.title || title}</span>
             </div>
             <div className="time">
-              <span>{time}</span>
+              <div>
+                <FieldTimeOutlined className="time-icon" />
+                <span>{time}</span>
+              </div>
               <img src={dayPictureUrl} alt="" />
-              <span>{weather}</span>
-              <span>{temperature}</span>
             </div>
           </div>
         </div>

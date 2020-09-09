@@ -1,5 +1,5 @@
 // 基本路径
-export const BASE_URL = 'http://192.168.1.4:4000'
+export const BASE_URL = 'http://localhost:4000'
 // 当前所在城市
 export const CITY = 'chaozhou'
 // 百度天气接口 ak
