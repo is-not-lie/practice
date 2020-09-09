@@ -78,7 +78,7 @@ class ImgUpload extends Component {
       <div className="clearfix">
         <Upload
           // 接收图片服务器的地址
-          action={`${BASE_URL}/manage/img/upload`}
+          action={`${BASE_URL}/upload`}
           // 请求方式
           method="post"
           // 发给服务器的参数名称

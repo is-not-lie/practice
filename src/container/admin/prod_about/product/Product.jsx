@@ -94,10 +94,10 @@ class Product extends Component {
     isDisabled: false,
   }
   componentDidMount() {
-    this.reqProductList()
+    this.getProductList()
   }
   // 请求商品分页列表回调
-  reqProductList = async (number = 1, pageSize = PAGESIZE) => {
+  getProductList = async (number = 1, pageSize = PAGESIZE) => {
     const { isSearch, searchType, keyWord } = this.state
     const data = isSearch
       ? await reqSearchProductList(number, pageSize, searchType, keyWord)
@@ -117,7 +117,7 @@ class Product extends Component {
   // 搜索按钮回调
   search = () => {
     this.setState({ isSearch: true, isLogin: true, isDisabled: true })
-    this.reqProductList()
+    this.getProductList()
   }
   // 更新商品状态回调
   updateProductStatus = async (item) => {

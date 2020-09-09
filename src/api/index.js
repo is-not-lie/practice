@@ -25,18 +25,18 @@ export const reqWeatherInfo = () =>
     )
   })
 // 请求商品分类列表
-export const reqCategoryList = () => instance.get('/manage/category/list')
+export const reqCategoryList = () => instance.get('/category/list')
 // 请求添加商品分类
-export const reqAddCategory = (v) => instance.post('/manage/category/add', v)
+export const reqAddCategory = (v) => instance.post('/category/add', v)
 // 请求修改商品分类
 export const reqUpdateCategory = (v) =>
-  instance.post('/manage/category/update', v)
+  instance.post('/category/update', v)
 // 根据分类ID获取分类信息
-export const reqCategoryInfo = (categoryId) =>
-  instance.get('/manage/category/info', { params: { categoryId } })
+export const reqCategoryInfo = (id) =>
+  instance.get('/category/info', { params: { id } })
 // 请求商品分页列表
 export const reqProductList = (pageNum = 1, pageSize = 5) =>
-  instance.get('/manage/product/list', { params: { pageNum, pageSize } })
+  instance.get('/product/list', { params: { pageNum, pageSize } })
 // 请求搜索商品分页列表
 export const reqSearchProductList = (
   pageNum = 1,
@@ -44,7 +44,7 @@ export const reqSearchProductList = (
   productType,
   keyWord
 ) =>
-  instance.get('/manage/product/search', {
+  instance.get('/product/search', {
     params: {
       pageNum,
       pageSize,
@@ -53,31 +53,31 @@ export const reqSearchProductList = (
   })
 // 请求更新商品状态
 export const reqUpdateProductStatus = (productId, status) =>
-  instance.post('/manage/product/updateStatus', { productId, status })
+  instance.post('/product/setstatus', { productId, status })
 // 请求删除图片
 export const reqRemoveImg = (name) =>
-  instance.post('/manage/img/delete', { name })
+  instance.post('/img/delete', { name })
 // 请求添加商品
-export const reqAddProduct = (v) => instance.post('/manage/product/add', v)
+export const reqAddProduct = (v) => instance.post('/product/add', v)
 // 根据ID请求商品信息
 export const reqProductInfo = (productId) =>
-  instance.get('/manage/product/info', { params: { productId } })
+  instance.get('/product/info', { params: { productId } })
 // 请求更新商品信息
 export const reqUpdateProduct = (v) =>
-  instance.post('/manage/product/update', v)
+  instance.post('/product/update', v)
 // 请求获取角色列表
-export const reqRoleList = () => instance.get('/manage/role/list')
+export const reqRoleList = () => instance.get('/role/list')
 // 请求添加角色
-export const reqAddRole = (v) => instance.post('/manage/role/add', v)
+export const reqAddRole = (v) => instance.post('/role/add', v)
 // 请求更新角色权限
-export const reqUpdateRole = (v) => instance.post('/manage/role/update', v)
+export const reqUpdateRole = (v) => instance.post('/role/update', v)
 // 获取用户列表
-export const reqUserList = () => instance.get('/manage/user/list')
+export const reqUserList = () => instance.get('/user/list')
 // 请求添加用户
-export const reqAddUser = (v) => instance.post('/manage/user/add', { ...v })
+export const reqAddUser = (v) => instance.post('/user/add', { ...v })
 // 请求更新用户信息
 export const reqUpdateUser = (v) =>
-  instance.post('/manage/user/update', { ...v })
+  instance.post('/user/update', { ...v })
 // 请求删除用户
 export const reqDelUser = (userId) =>
-  instance.post('/manage/user/delete', { userId })
+  instance.post('/user/delete', { userId })

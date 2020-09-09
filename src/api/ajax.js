@@ -4,10 +4,10 @@ import { message } from 'antd'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import store from '../redux/store'
-import { BASE_URL } from '../config'
+// import { BASE_URL } from '../config'
 // 配置基本路径与超时时间
 const instance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: '',
   timeout: 5000,
 })
 // 请求拦截
@@ -17,7 +17,7 @@ instance.interceptors.request.use((config) => {
   // 获取redux中保存的token
   const { token } = store.getState().userInfo
   // 如果有token则在请求头添加token
-  if (token) config.headers.Authorization = `atguigu_${token}`
+  if (token) config.headers.Authorization = `test${token}`
   const { data, method } = config
   // 处理post请求参数为urlencoded格式
   if (method.toLowerCase() === 'post')
@@ -31,7 +31,7 @@ instance.interceptors.response.use(
     // 停止进度条动画，脱掉axios封装的壳
     NProgress.done()
     const { status, data, msg } = value.data
-    if (status === 0) return data || 1
+    if (status >= 200 && status < 300) return data || true
     else
       msg
         ? message.error(msg, 1)

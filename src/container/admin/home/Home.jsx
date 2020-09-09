@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import userImg from '../../../static/img/userImg.jpg'
 import '../../../less/Home.less'
 @connect((state) => ({ userInfo: state.userInfo }))
 class Home extends Component {
@@ -50,10 +49,10 @@ class Home extends Component {
     }, 1000 / 60)
   }
   render() {
-    const { username } = this.props.userInfo.user
+    const { username, avatar } = this.props.userInfo.user
     return (
       <div className="home" ref={(ref) => (this.home = ref)}>
-        <img src={userImg} alt="用户头像" />
+        <img src={avatar} alt="用户头像" />
         <h2>欢迎，{username}</h2>
         <canvas className="canvas" ref={(ref) => (this.oc = ref)}></canvas>
       </div>
